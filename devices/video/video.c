@@ -27,12 +27,25 @@ uint64_t height;			// 屏幕宽
 uint64_t stride;			// 帧缓冲区行间距
 uint32_t *buffer;			// 显存
 
+uint32_t *back_buffer;
+
 int32_t x, y;				// 当前光标的绝对位置
 int32_t cx, cy;				// 当前光标的字符位置
 uint32_t c_width, c_height;	// 屏幕的字符宽高
 
 uint32_t fore_color;		// 前景色
 uint32_t back_color;		// 背景色
+
+static void swap_buffers(void);
+static void swap_buffers(){
+	buffer = back_buffer;
+	return;
+}
+
+inline void video_flush(){
+	swap_buffers();
+	return;
+}
 
 /* 初始化视频驱动 */
 void video_init(void)
@@ -45,6 +58,7 @@ void video_init(void)
 	width	= framebuffer->width;
 	height	= framebuffer->height;
 	stride	= framebuffer->pitch / 4;
+	back_buffer = buffer;
 
 	x = 2;
 	y = cx = cy = 0;
@@ -66,24 +80,26 @@ struct limine_framebuffer *get_framebuffer(void)
 void video_clear(void)
 {
 	for (uint32_t i = 0; i < (width * height); i++) {
-		buffer[i] = 0xff000000;
+		back_buffer[i] = 0xff000000;
 	}
 	back_color = 0xff000000;
 	x = 2;
 	y = 0;
 	cx = cy = 0;
+	swap_buffers();
 }
 
 /* 带颜色清屏 */
 void video_clear_color(int color)
 {
 	for (uint32_t i = 0; i < (width * height); i++) {
-		buffer[i] = color;
+		back_buffer[i] = color;
 	}
 	back_color = color;
 	x = 2;
 	y = 0;
 	cx = cy = 0;
+	swap_buffers();
 }
 
 /* 屏幕滚动操作 */
@@ -94,14 +110,15 @@ inline void video_scroll(void)
 		cy++;
 	} else cx++;
 	if ((uint32_t)cy >= c_height) {
-		const uint32_t *sr = buffer + stride * 16;
-		uint32_t *dst = buffer;
+		const uint32_t *sr = back_buffer + stride * 16;
+		uint32_t *dst = back_buffer;
 		for (unsigned long len = (height - 16) * stride; len > 0; len--) {
 			*dst++ = *sr++;
 		}
-		memset(buffer + (height - 16) * stride, back_color, 16 * stride * sizeof(uint32_t));
+		memset(back_buffer + (height - 16) * stride, back_color, 16 * stride * sizeof(uint32_t));
 		cy = c_height - 1;
 	}
+	swap_buffers();
 }
 
 /* 在屏幕指定坐标绘制一个像素 */
@@ -110,7 +127,7 @@ void video_draw_pixel(uint32_t x, uint32_t y, uint32_t color)
 	if (x >= width || y >= height) {
 		return;
 	}
-	uint32_t *p = (uint32_t *)buffer + y * width + x;
+	uint32_t *p = (uint32_t *)back_buffer + y * width + x;
 	*p = color;
 }
 
@@ -120,7 +137,7 @@ void video_draw_rect(int x0, int y0, int x1, int y1, int color)
 	int x, y;
 	for (y = y0; y <= y1; y++) {
 		for (x = x0; x <= x1; x++) {
-			(buffer)[y * width + x] = color;
+			(back_buffer)[y * width + x] = color;
 		}
 	}
 }
@@ -133,8 +150,8 @@ void video_draw_char(char c, int32_t x, int32_t y, int color)
 	for (int i = 0; i < 16; i++) {
 		for (int j = 0; j < 9; j++) {
 			if (font[i] & (0x80 >> j)) {
-				buffer[(y + i) * width + x + j] = color;
-			} else buffer[(y + i) * width + x + j] = back_color;
+				back_buffer[(y + i) * width + x + j] = color;
+			} else back_buffer[(y + i) * width + x + j] = back_color;
 		}
 	}
 }
@@ -176,6 +193,8 @@ void video_put_string(const char *str)
 		char c = *str;
 		video_put_char(c, fore_color);
 	}
+
+	swap_buffers();
 }
 
 /* 带颜色在屏幕指定坐标打印一个字符串 */
@@ -185,4 +204,5 @@ void video_put_string_color(const char *str, int color)
 		char c = *str;
 		video_put_char(c, color);
 	}
+	swap_buffers();
 }
