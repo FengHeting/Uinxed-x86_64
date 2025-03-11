@@ -21,6 +21,9 @@ void video_init(void);
 /* 获取帧缓冲区 */
 struct limine_framebuffer *get_framebuffer(void);
 
+/* 刷新帧缓冲区 */
+void video_flush(void);
+
 /* 清屏 */
 void video_clear(void);
 
