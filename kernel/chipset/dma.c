@@ -34,7 +34,7 @@ void dma_start(byte mode, byte channel, void *address, unsigned int size)
 	if (channel > 4 && size % 2 != 0)
 		return;
 
-	unsigned int addr = (unsigned int)address;
+	unsigned long addr = (unsigned long)address;
 
 	if (!(addr < DMA_ADDR_MAX))
 		return;
