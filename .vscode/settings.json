@@ -1,6 +1,0 @@
-{
-	"files.associations": {
-		"*.s": "nasm",
-		"smbios.h": "c"
-	}
-}
