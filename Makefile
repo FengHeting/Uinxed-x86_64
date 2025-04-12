@@ -17,6 +17,7 @@ else
   Q=@
 endif
 
+CC          := gcc
 C_SOURCES	:= $(shell find * -name "*.c")
 S_SOURCES	:= $(shell find * -name "*.s")
 OBJS		:= $(C_SOURCES:%.c=%.o) $(S_SOURCES:%.s=%.o)
