@@ -39,13 +39,16 @@ void video_draw_rect(int x0, int y0, int x1, int y1, int color);
 /* Draw a character at the specified coordinates on the screen */
 void video_draw_char(char c, int32_t x, int32_t y, int color);
 
-/* Print a character at the specified coordinates on the screen */
-void video_put_char(char c, int color);
+/* Print a character with color at the specified coordinates on the screen */
+void video_put_char_color(char c, int color);
 
-/* Print a string at the specified coordinates on the screen */
-void video_put_string(const char *str);
+/* Print a character at the specified coordinates on the screen */
+void video_put_char(char c);
 
 /* Print a string with color at the specified coordinates on the screen */
 void video_put_string_color(const char *str, int color);
+
+/* Print a string at the specified coordinates on the screen */
+void video_put_string(const char *str);
 
 #endif // INCLUDE_VIDEO_H_

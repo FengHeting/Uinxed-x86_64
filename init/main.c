@@ -59,7 +59,7 @@ void kernel_entry(void)
 	pci_init();				// Initialize PCI
 	init_serial();			// Initialize the serial port
 	init_ide();				// Initialize ATA/ATAPI driver
-	enable_intr();
+    enable_intr();          // Enable interrupts
 
 	while (1) __asm__("hlt");
 }

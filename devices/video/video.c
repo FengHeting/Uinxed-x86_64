@@ -139,8 +139,8 @@ void video_draw_char(char c, int32_t x, int32_t y, int color)
 	}
 }
 
-/* Print a character at the specified coordinates on the screen */
-void video_put_char(char c, int color)
+/* Print a character with color at the specified coordinates on the screen */
+void video_put_char_color(char c, int color)
 {
 	if (c == '\n') {
 		video_scroll();
@@ -151,7 +151,7 @@ void video_put_char(char c, int color)
 		cx = 0;
 		return;
 	} else if(c == '\t') {
-		for (int i = 0; i < 4; i++) video_put_char(' ', color);
+		for (int i = 0; i < 4; i++) video_put_char_color(' ', color);
 		return;
 	} else if (c == '\b' && cx > 0) {
 		cx -= 1;
@@ -169,13 +169,9 @@ void video_put_char(char c, int color)
 	video_draw_char(c, cx * 8 - 7, cy * 16, color);
 }
 
-/* Print a string at the specified coordinates on the screen */
-void video_put_string(const char *str)
-{
-	for (; *str; ++str) {
-		char c = *str;
-		video_put_char(c, fore_color);
-	}
+/* Print a character at the specified coordinates on the screen */
+void video_put_char(char c) {
+	video_put_char_color(c, fore_color);
 }
 
 /* Print a string with color at the specified coordinates on the screen */
@@ -183,6 +179,13 @@ void video_put_string_color(const char *str, int color)
 {
 	for (; *str; ++str) {
 		char c = *str;
-		video_put_char(c, color);
+		video_put_char_color(c, color);
 	}
+}
+
+
+/* Print a string at the specified coordinates on the screen */
+void video_put_string(const char *str)
+{
+	video_put_string_color(str, fore_color);
 }
