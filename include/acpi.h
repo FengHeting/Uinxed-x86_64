@@ -27,15 +27,15 @@ struct ACPISDTHeader {
 };
 
 typedef struct {
-	char signature[8];			// Sign
-	uint8_t checksum;			// Checksum
-	char oem_id[6];				// OEM ID
-	uint8_t revision;			// Version
-	uint32_t rsdt_address;		// V1: RSDT address (32-bit)
-	uint32_t length;			// Structure length
-	uint64_t xsdt_address;		// V2: XSDT address (64-bit)
-	uint8_t extended_checksum;	// Extended Checksum
-	uint8_t reserved[3];		// Reserved Fields
+	char signature[8];		   // Sign
+	uint8_t checksum;		   // Checksum
+	char oem_id[6];			   // OEM ID
+	uint8_t revision;		   // Version
+	uint32_t rsdt_address;	   // V1: RSDT address (32-bit)
+	uint32_t length;		   // Structure length
+	uint64_t xsdt_address;	   // V2: XSDT address (64-bit)
+	uint8_t extended_checksum; // Extended Checksum
+	uint8_t reserved[3];	   // Reserved Fields
 } __attribute__((packed)) RSDP;
 
 typedef struct {
@@ -78,7 +78,7 @@ typedef struct {
 	HpetTimer timers[];
 } __attribute__((packed)) volatile HpetInfo;
 
-typedef struct dsdt_table{
+typedef struct dsdt_table {
 	uint8_t signature[4];
 	uint32_t length;
 	uint8_t revision;

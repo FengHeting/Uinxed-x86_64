@@ -11,17 +11,17 @@
 
 #include "acpi.h"
 #include "apic.h"
-#include "string.h"
-#include "printk.h"
-#include "limine.h"
 #include "hhdm.h"
+#include "limine.h"
+#include "printk.h"
+#include "string.h"
 
 XSDT *xsdt;
 
-__attribute__((used, section(".limine_requests")))
-static volatile struct limine_rsdp_request rsdp_request = {
+__attribute__((
+	used, section(".limine_requests"))) static volatile struct limine_rsdp_request rsdp_request = {
 	.id = LIMINE_RSDP_REQUEST,
-	.revision = 0
+	.revision = 0,
 };
 
 /* Find the corresponding ACPI table in XSDT */

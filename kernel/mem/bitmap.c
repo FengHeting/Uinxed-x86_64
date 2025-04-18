@@ -10,8 +10,8 @@
  */
 
 #include "bitmap.h"
-#include "string.h"
 #include "printk.h"
+#include "string.h"
 
 /* Initialize the memory bitmap */
 void bitmap_init(Bitmap *bitmap, uint8_t *buffer, size_t size)

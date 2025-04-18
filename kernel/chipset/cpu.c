@@ -10,13 +10,13 @@
  */
 
 #include "cpu.h"
-#include "printk.h"
 #include "alloc.h"
+#include "printk.h"
 
 /* Get CPUID */
 void cpuid(uint32_t code, uint32_t *a, uint32_t *b, uint32_t *c, uint32_t *d)
 {
-	__asm__ volatile ("cpuid" : "=a"(*a), "=b"(*b), "=c"(*c), "=d"(*d) : "a"(code) : "memory");
+	__asm__ volatile("cpuid" : "=a"(*a), "=b"(*b), "=c"(*c), "=d"(*d) : "a"(code) : "memory");
 }
 
 /* Get CPU manufacturer name */
@@ -24,10 +24,8 @@ char *get_vendor_name(void)
 {
 	int cpuid_level;
 	static char x86_vendor_id[16] = {0};
-	cpuid(0x00000000, (uint32_t *)&cpuid_level,
-                      (uint32_t *)&x86_vendor_id[0],
-                      (uint32_t *)&x86_vendor_id[8],
-                      (uint32_t *)&x86_vendor_id[4]);
+	cpuid(0x00000000, (uint32_t *)&cpuid_level, (uint32_t *)&x86_vendor_id[0],
+		  (uint32_t *)&x86_vendor_id[8], (uint32_t *)&x86_vendor_id[4]);
 	return x86_vendor_id;
 }
 

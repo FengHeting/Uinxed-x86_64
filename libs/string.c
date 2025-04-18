@@ -10,8 +10,8 @@
  */
 
 #include "string.h"
-#include "stdint.h"
 #include "stddef.h"
+#include "stdint.h"
 
 /* Copy n bytes from memory area str2 to memory area str1 */
 void *memcpy(void *str1, const void *str2, size_t n)
@@ -53,7 +53,8 @@ void *memmove(void *str1, const void *str2, size_t n)
 	return str1;
 }
 
-/* Compares the first n bytes of memory area str1 with those of memory area str2 */
+/* Compares the first n bytes of memory area str1 with those of memory area str2
+ */
 int memcmp(const void *str1, const void *str2, size_t n)
 {
 	const uint8_t *_str1 = (const uint8_t *)str1;
@@ -124,7 +125,8 @@ int strncmp(const char *str1, const char *str2, size_t n)
 	return 0;
 }
 
-/* Append the string pointed to by src to the end of the string pointed to by dest */
+/* Append the string pointed to by src to the end of the string pointed to by
+ * dest */
 char *strcat(char *dest, const char *src)
 {
 	const char *_dest = dest;
@@ -134,7 +136,8 @@ char *strcat(char *dest, const char *src)
 	return (char *)_dest;
 }
 
-/* Finds a character in a string and returns the position of the character in the string */
+/* Finds a character in a string and returns the position of the character in
+ * the string */
 char *strchr(const char *str, int c)
 {
 	for (; *str != '\0'; str++) {
@@ -143,7 +146,8 @@ char *strchr(const char *str, int c)
 	return 0;
 }
 
-/* Searches the string pointed to by the parameter str for the last occurrence of the character c */
+/* Searches the string pointed to by the parameter str for the last occurrence
+ * of the character c */
 char *strrchr(const char *str, int c)
 {
 	const char *finded = 0;
@@ -153,7 +157,8 @@ char *strrchr(const char *str, int c)
 	return (char *)finded;
 }
 
-/* Find the first occurrence of the string needle in the string haystack, excluding the terminator */
+/* Find the first occurrence of the string needle in the string haystack,
+ * excluding the terminator */
 char *strstr(const char *haystack, const char *needle)
 {
 	size_t _sn = strlen(haystack), _tn = strlen(needle);

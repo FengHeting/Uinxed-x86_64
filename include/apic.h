@@ -12,23 +12,23 @@
 #ifndef INCLUDE_APIC_H_
 #define INCLUDE_APIC_H_
 
-#include "stdint.h"
 #include "acpi.h"
+#include "stdint.h"
 
-#define MADT_APIC_CPU			0x00
-#define MADT_APIC_IO			0x01
-#define MADT_APIC_INT			0x02
-#define MADT_APIC_NMI			0x03
+#define MADT_APIC_CPU 0x00
+#define MADT_APIC_IO  0x01
+#define MADT_APIC_INT 0x02
+#define MADT_APIC_NMI 0x03
 
 #define LAPIC_REG_ID			32
 #define LAPIC_REG_TIMER_CURCNT	0x390
-#define LAPIC_REG_TIMER_INITCNT	0x380
+#define LAPIC_REG_TIMER_INITCNT 0x380
 #define LAPIC_REG_TIMER			0x320
 #define LAPIC_REG_SPURIOUS		0xf0
 #define LAPIC_REG_TIMER_DIV		0x3e0
 
-#define APIC_ICR_LOW			0x300
-#define APIC_ICR_HIGH			0x310
+#define APIC_ICR_LOW  0x300
+#define APIC_ICR_HIGH 0x310
 
 typedef struct {
 	struct ACPISDTHeader h;

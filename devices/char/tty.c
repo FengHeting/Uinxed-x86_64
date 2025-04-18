@@ -9,12 +9,12 @@
  *
  */
 
-#include "stdint.h"
-#include "serial.h"
 #include "alloc.h"
-#include "video.h"
 #include "cmdline.h"
+#include "serial.h"
+#include "stdint.h"
 #include "string.h"
+#include "video.h"
 
 /* Argument parsing */
 static int arg_parse(char *arg_str, char **argv, char token)
@@ -85,8 +85,7 @@ void tty_print_ch(const char ch)
 void tty_print_str(const char *str)
 {
 	if (strcmp(get_boot_tty(), "ttyS0") == 0)
-		for (; *str; ++str)
-			write_serial(*str);
+		for (; *str; ++str) write_serial(*str);
 	else
 		video_put_string(str);
 }

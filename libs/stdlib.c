@@ -52,14 +52,11 @@ char *number(char *str, int64_t num, int base, int size, int precision, int type
 	const char *digits = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 	int i;
 
-	if (type & SMALL)
-		digits = "0123456789abcdefghijklmnopqrstuvwxyz";
-	if (type & LEFT)
-		type &= ~ZEROPAD;
-	if (base < 2 || base > 36)
-		return 0;
+	if (type & SMALL) digits = "0123456789abcdefghijklmnopqrstuvwxyz";
+	if (type & LEFT) type &= ~ZEROPAD;
+	if (base < 2 || base > 36) return 0;
 
-	c = (type & ZEROPAD) ? '0' : ' ' ;
+	c = (type & ZEROPAD) ? '0' : ' ';
 
 	if (type & SIGN && num < 0) {
 		sign = '-';
@@ -84,7 +81,7 @@ char *number(char *str, int64_t num, int base, int size, int precision, int type
 		tmp[i++] = '0';
 	} else {
 		while (num != 0) {
-			tmp[i++] = digits[do_div(num,base)];
+			tmp[i++] = digits[do_div(num, base)];
 		}
 	}
 	if (i > precision) {

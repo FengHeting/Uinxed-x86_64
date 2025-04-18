@@ -10,15 +10,15 @@
  */
 
 #include "debug.h"
-#include "printk.h"
 #include "common.h"
+#include "printk.h"
 #include "vargs.h"
 
 /* Dump stack */
 void dump_stack(void)
 {
 	uintptr_t *rbp;
-	__asm__ volatile ("movq %%rbp, %0" : "=r"(rbp));
+	__asm__ volatile("movq %%rbp, %0" : "=r"(rbp));
 
 	plogk("Call Trace:\n");
 	plogk(" <TASK>\n");

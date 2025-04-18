@@ -10,18 +10,18 @@
  */
 
 #include "apic.h"
-#include "printk.h"
-#include "hhdm.h"
 #include "common.h"
-#include "limine.h"
+#include "hhdm.h"
 #include "idt.h"
+#include "limine.h"
+#include "printk.h"
 
 int x2apic_mode;
 uint64_t lapic_address;
 uint64_t ioapic_address;
 
-__attribute__((used, section(".limine_requests")))
-static volatile struct limine_smp_request smp_request = {
+__attribute__((
+	used, section(".limine_requests"))) static volatile struct limine_smp_request smp_request = {
 	.id = LIMINE_SMP_REQUEST,
 	.revision = 0,
 	.response = 0,
@@ -99,7 +99,8 @@ void local_apic_init(void)
 	lapic_write(LAPIC_REG_TIMER_DIV, 11);
 	lapic_write(LAPIC_REG_TIMER_INITCNT, ~((uint32_t)0));
 
-	while (1) if (nano_time() - nano_time() >= 1000000) break;
+	while (1)
+		if (nano_time() - nano_time() >= 1000000) break;
 	uint64_t lapic_timer = (~(uint32_t)0) - lapic_read(LAPIC_REG_TIMER_CURCNT);
 	uint64_t calibrated_timer_initial = (uint64_t)((uint64_t)(lapic_timer * 1000) / 250);
 
@@ -112,9 +113,9 @@ void io_apic_init(void)
 {
 	ioapic_add(IRQ_32, 0);	// Timer
 	ioapic_add(IRQ_33, 1);	// Keyboard
-	ioapic_add(IRQ_34, 12);	// Mouse
-	ioapic_add(IRQ_46, 14);	// IDE0
-	ioapic_add(IRQ_47, 15);	// IDE1
+	ioapic_add(IRQ_34, 12); // Mouse
+	ioapic_add(IRQ_46, 14); // IDE0
+	ioapic_add(IRQ_47, 15); // IDE1
 }
 
 /* Send EOI signal */

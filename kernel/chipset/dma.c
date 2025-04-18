@@ -12,7 +12,7 @@
 #include "dma.h"
 #include "common.h"
 
-#define LOW_BYTE(x) ((x) & 0x00ff)
+#define LOW_BYTE(x)	 ((x) & 0x00ff)
 #define HIGH_BYTE(x) (((x) & 0xff00) >> 8)
 
 /* Fast access registers and ports for each DMA channel */

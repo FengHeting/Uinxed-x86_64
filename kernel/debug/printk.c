@@ -9,14 +9,14 @@
  *
  */
 
-#include "video.h"
-#include "string.h"
-#include "stdlib.h"
-#include "vargs.h"
 #include "printk.h"
 #include "acpi.h"
 #include "cmos.h"
+#include "stdlib.h"
+#include "string.h"
 #include "tty.h"
+#include "vargs.h"
+#include "video.h"
 
 /* Kernel print string */
 void printk(const char *format, ...)
@@ -56,8 +56,8 @@ void plogk(const char *format, ...)
 void sprintf(char *str, const char *fmt, ...)
 {
 	va_list arg;
-	va_start(arg,fmt);
-	vsprintf(str,fmt,arg);
+	va_start(arg, fmt);
+	vsprintf(str, fmt, arg);
 	va_end(arg);
 }
 
@@ -74,20 +74,25 @@ int vsprintf(char *buff, const char *format, va_list args)
 			continue;
 		}
 		flags = 0;
-		repeat:
-			++format;
+	repeat:
+		++format;
 		switch (*format) {
-				case '-': flags |= LEFT;
-					goto repeat;
-				case '+': flags |= PLUS;
-					goto repeat;
-				case ' ': flags |= SPACE;
-					goto repeat;
-				case '#': flags |= SPECIAL;
-					goto repeat;
-				case '0': flags |= ZEROPAD;
-					goto repeat;
-			}
+		case '-':
+			flags |= LEFT;
+			goto repeat;
+		case '+':
+			flags |= PLUS;
+			goto repeat;
+		case ' ':
+			flags |= SPACE;
+			goto repeat;
+		case '#':
+			flags |= SPECIAL;
+			goto repeat;
+		case '0':
+			flags |= ZEROPAD;
+			goto repeat;
+		}
 		field_width = -1;
 		if (is_digit(*format)) {
 			field_width = skip_atoi(&format);
@@ -100,7 +105,7 @@ int vsprintf(char *buff, const char *format, va_list args)
 		}
 		precision = -1;
 		if (*format == '.') {
-			++format;	
+			++format;
 			if (is_digit(*format)) {
 				precision = skip_atoi(&format);
 			} else if (*format == '*') {
@@ -174,8 +179,7 @@ int vsprintf(char *buff, const char *format, va_list args)
 			*ip = (str - buff);
 			break;
 		default:
-			if (*format != '%')
-				*str++ = '%';
+			if (*format != '%') *str++ = '%';
 			if (*format) {
 				*str++ = *format;
 			} else {

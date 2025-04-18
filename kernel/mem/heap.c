@@ -10,13 +10,13 @@
  */
 
 #include "heap.h"
-#include "printk.h"
-#include "string.h"
-#include "hhdm.h"
 #include "alloc.h"
+#include "hhdm.h"
 #include "page.h"
-#include "stdint.h"
+#include "printk.h"
 #include "stddef.h"
+#include "stdint.h"
+#include "string.h"
 
 /* Initialize the memory heap */
 void init_heap(void)
