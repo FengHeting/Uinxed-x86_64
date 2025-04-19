@@ -30,4 +30,7 @@ int vsprintf(char *buff, const char *format, va_list args);
 /* Format a string with size and output it to a character array */
 int vsprintf_s(char *buff, intptr_t size, const char **format, va_list args);
 
+/* Clean overflow signal */
+void clean_overflow_signal(void);
+
 #endif // INCLUDE_PRINTK_H_

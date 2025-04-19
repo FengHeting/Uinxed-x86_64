@@ -54,7 +54,7 @@ void video_init(void)
 
 	x = 2;
 	y = cx = cy = 0;
-	c_width		= width / 9;
+	c_width		= width / 8;
 	c_height	= height / 16;
 
 	fore_color = 0xffaaaaaa;
@@ -66,11 +66,10 @@ void video_init(void)
 void video_clear(void)
 {
 	for (uint32_t i = 0; i < (width * height); i++) {
-		buffer[i] = 0xff000000;
+		buffer[i] = back_color;
 	}
-	back_color = 0xff000000;
-	x		   = 2;
-	y		   = 0;
+	x  = 0;
+	y  = 0;
 	cx = cy = 0;
 }
 
@@ -81,7 +80,7 @@ void video_clear_color(int color)
 		buffer[i] = color;
 	}
 	back_color = color;
-	x		   = 2;
+	x		   = 0;
 	y		   = 0;
 	cx = cy = 0;
 }
@@ -89,26 +88,34 @@ void video_clear_color(int color)
 /* Screen scrolling operation */
 void video_scroll(void)
 {
-	if ((uint32_t)cx > c_width) {
+	if ((uint32_t)cx > c_width - 1) {
 		cx = 0;
 		cy++;
-	} else
+	} else {
 		cx++;
-	if ((uint32_t)cy >= c_height) {
-		uint8_t		  *dest	 = (uint8_t *)buffer;
-		const uint8_t *src	 = (const uint8_t *)(buffer + stride * 16);
-		size_t		   count = (width * (height - 16) * sizeof(uint32_t)) / 8;
+	}
+	uint8_t		  *dest;
+	const uint8_t *src;
+	size_t		   count;
 
+	if ((uint32_t)cy >= c_height) {
+		dest  = (uint8_t *)buffer;
+		src	  = (const uint8_t *)(buffer + stride * 16);
+		count = (width * (height - 16) * sizeof(uint32_t)) / 8;
 		__asm__ volatile("rep movsq" : "+D"(dest), "+S"(src), "+c"(count)::"memory");
 
 		memset(buffer + (height - 16) * stride, back_color, 16 * stride * sizeof(uint32_t));
 		cy = c_height - 1;
+		cx = 1;
 	}
 }
 
 /* Draw a pixel at the specified coordinates on the screen */
 void video_draw_pixel(uint32_t x, uint32_t y, uint32_t color)
 {
+	if (x >= width || y >= height) {
+		return;
+	}
 	(buffer)[y * width + x] = color;
 }
 
@@ -118,7 +125,7 @@ void video_draw_rect(int x0, int y0, int x1, int y1, int color)
 	int x, y;
 	for (y = y0; y <= y1; y++) {
 		for (x = x0; x <= x1; x++) {
-			(buffer)[y * width + x] = color;
+			video_draw_pixel(x, y, color);
 		}
 	}
 }
@@ -131,9 +138,10 @@ void video_draw_char(const char c, int32_t x, int32_t y, int color)
 	for (int i = 0; i < 16; i++) {
 		for (int j = 0; j < 9; j++) {
 			if (font[i] & (0x80 >> j)) {
-				buffer[(y + i) * width + x + j] = color;
-			} else
-				buffer[(y + i) * width + x + j] = back_color;
+				video_draw_pixel(x + j, y + i, color);
+			} else {
+				video_draw_pixel(x + j, y + i, back_color);
+			}
 		}
 	}
 }
