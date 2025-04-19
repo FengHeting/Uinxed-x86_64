@@ -22,8 +22,8 @@
 void printk(const char *format, ...)
 {
 	static char buff[2048];
-	va_list args;
-	int i;
+	va_list		args;
+	int			i;
 
 	va_start(args, format);
 	while (1) {
@@ -50,8 +50,8 @@ void plogk(const char *format, ...)
 	printk("] ");
 
 	static char buff[2048];
-	va_list args;
-	int i;
+	va_list		args;
+	int			i;
 
 	va_start(args, format);
 	while (1) {
@@ -82,9 +82,9 @@ void sprintf(char *str, const char *fmt, ...)
 /* Format a string and output it to a character array */
 int vsprintf(char *buff, const char *format, va_list args)
 {
-	int len, i, flags, field_width, precision;
+	int	  len, i, flags, field_width, precision;
 	char *str, *s;
-	int *ip;
+	int	 *ip;
 
 	for (str = buff; *format; ++format) {
 		if (*format != '%') {
@@ -149,7 +149,7 @@ int vsprintf(char *buff, const char *format, va_list args)
 			}
 			break;
 		case 's':
-			s = va_arg(args, char *);
+			s	= va_arg(args, char *);
 			len = strlen(s);
 			if (precision < 0) {
 				precision = len;
@@ -193,7 +193,7 @@ int vsprintf(char *buff, const char *format, va_list args)
 			str = number(str, va_arg(args, size_t), 2, field_width, precision, flags);
 			break;
 		case 'n':
-			ip = va_arg(args, int *);
+			ip	= va_arg(args, int *);
 			*ip = (str - buff);
 			break;
 		default:
@@ -212,15 +212,15 @@ int vsprintf(char *buff, const char *format, va_list args)
 
 int vsprintf_s(char *buff, intptr_t size, const char **format, va_list args)
 {
-	int len, i, flags, field_width, precision;
+	int		 len, i, flags, field_width, precision;
 	intptr_t desc_len = 0, tmp_len = 0; // Format description length
-	int overflow_sig = 0;
-	char *str, *s;
-	int *ip;
+	int		 overflow_sig = 0;
+	char	*str, *s;
+	int		*ip;
 
 	for (str = buff; **format; ++(*format)) {
 		if (**format != '%' && str - buff < size) {
-			*str++ = **format;
+			*str++	 = **format;
 			desc_len = 0;
 			continue;
 		}
@@ -255,7 +255,7 @@ int vsprintf_s(char *buff, intptr_t size, const char **format, va_list args)
 		// check number of digits
 		field_width = -1;
 		if (is_digit(**format)) {
-			tmp_len = (intptr_t)*format;
+			tmp_len		= (intptr_t)*format;
 			field_width = skip_atoi(format);
 			desc_len += (intptr_t)*format - tmp_len;
 		} else if (**format == '*') {
@@ -271,7 +271,7 @@ int vsprintf_s(char *buff, intptr_t size, const char **format, va_list args)
 			++(*format);
 			++desc_len;
 			if (is_digit(**format)) {
-				tmp_len = (intptr_t)*format;
+				tmp_len	  = (intptr_t)*format;
 				precision = skip_atoi(format);
 				desc_len += (intptr_t)*format - tmp_len;
 			} else if (**format == '*') {
@@ -308,7 +308,7 @@ int vsprintf_s(char *buff, intptr_t size, const char **format, va_list args)
 			}
 			break;
 		case 's':
-			s = va_arg(args, char *);
+			s	= va_arg(args, char *);
 			len = strlen(s);
 			// Check overflow
 			if (str + len - buff >= size) {
@@ -373,7 +373,7 @@ int vsprintf_s(char *buff, intptr_t size, const char **format, va_list args)
 			str = number(str, va_arg(args, size_t), 2, field_width, precision, flags);
 			break;
 		case 'n':
-			ip = va_arg(args, int *);
+			ip	= va_arg(args, int *);
 			*ip = (str - buff);
 			break;
 		default:

@@ -19,11 +19,13 @@
 
 /* Structure */
 struct IDE_channel_registers channels[2];
-struct ide_device ide_devices[4];
+struct ide_device			 ide_devices[4];
 
 /* Data Array */
-uint8_t ide_buf[2048] = {0};
-static uint8_t atapi_packet[12] = {0xa8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+uint8_t		   ide_buf[2048]	= {0};
+static uint8_t atapi_packet[12] = {
+	0xa8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+};
 static int package[2];
 
 /* Interrupt status bit */
@@ -56,11 +58,11 @@ static void ide_initialize(uint32_t BAR0, uint32_t BAR1, uint32_t BAR2, uint32_t
 		  BAR0, BAR1, BAR2, BAR3, BAR4);
 
 	/* Detect the I/O ports of the IDE controller */
-	channels[ATA_PRIMARY].base = (BAR0 & 0xfffffffc) + 0x1f0 * (!BAR0);
-	channels[ATA_PRIMARY].ctrl = (BAR1 & 0xfffffffc) + 0x3f6 * (!BAR1);
-	channels[ATA_SECONDARY].base = (BAR2 & 0xfffffffc) + 0x170 * (!BAR2);
-	channels[ATA_SECONDARY].ctrl = (BAR3 & 0xfffffffc) + 0x376 * (!BAR3);
-	channels[ATA_PRIMARY].bmide = (BAR4 & 0xfffffffc) + 0;
+	channels[ATA_PRIMARY].base	  = (BAR0 & 0xfffffffc) + 0x1f0 * (!BAR0);
+	channels[ATA_PRIMARY].ctrl	  = (BAR1 & 0xfffffffc) + 0x3f6 * (!BAR1);
+	channels[ATA_SECONDARY].base  = (BAR2 & 0xfffffffc) + 0x170 * (!BAR2);
+	channels[ATA_SECONDARY].ctrl  = (BAR3 & 0xfffffffc) + 0x376 * (!BAR3);
+	channels[ATA_PRIMARY].bmide	  = (BAR4 & 0xfffffffc) + 0;
 	channels[ATA_SECONDARY].bmide = (BAR4 & 0xfffffffc) + 8;
 
 	/* Disable IRQ */
@@ -109,11 +111,11 @@ static void ide_initialize(uint32_t BAR0, uint32_t BAR1, uint32_t BAR2, uint32_t
 			ide_read_buffer(i, ATA_REG_DATA, (uint64_t)ide_buf, 128);
 
 			/* Read device parameters */
-			ide_devices[count].reserved = 1;
-			ide_devices[count].type = type;
-			ide_devices[count].channel = i;
-			ide_devices[count].drive = j;
-			ide_devices[count].signature = *((uint16_t *)(ide_buf + ATA_IDENT_DEVICETYPE));
+			ide_devices[count].reserved		= 1;
+			ide_devices[count].type			= type;
+			ide_devices[count].channel		= i;
+			ide_devices[count].drive		= j;
+			ide_devices[count].signature	= *((uint16_t *)(ide_buf + ATA_IDENT_DEVICETYPE));
 			ide_devices[count].capabilities = *((uint16_t *)(ide_buf + ATA_IDENT_CAPABILITIES));
 			ide_devices[count].command_sets = *((uint32_t *)(ide_buf + ATA_IDENT_COMMANDSETS));
 
@@ -126,7 +128,7 @@ static void ide_initialize(uint32_t BAR0, uint32_t BAR1, uint32_t BAR2, uint32_t
 
 			/* Get device model */
 			for (k = 0; k < 40; k += 2) {
-				ide_devices[count].model[k] = ide_buf[ATA_IDENT_MODEL + k + 1];
+				ide_devices[count].model[k]		= ide_buf[ATA_IDENT_MODEL + k + 1];
 				ide_devices[count].model[k + 1] = ide_buf[ATA_IDENT_MODEL + k];
 			}
 			ide_devices[count].model[40] = 0;
@@ -283,45 +285,45 @@ uint8_t ide_polling(uint8_t channel, uint32_t advanced_check)
 uint8_t ide_ata_access(uint8_t direction, uint8_t drive, uint32_t lba, uint8_t numsects,
 					   uint64_t edi)
 {
-	uint8_t lba_mode, dma, cmd;
-	uint8_t lba_io[6];
-	uint32_t channel = ide_devices[drive].channel;
+	uint8_t	 lba_mode, dma, cmd;
+	uint8_t	 lba_io[6];
+	uint32_t channel  = ide_devices[drive].channel;
 	uint32_t slavebit = ide_devices[drive].drive;
-	uint32_t bus = channels[channel].base;
-	uint32_t words = 256;
+	uint32_t bus	  = channels[channel].base;
+	uint32_t words	  = 256;
 	uint16_t cyl, i;
-	uint8_t head, sect, err;
+	uint8_t	 head, sect, err;
 
 	ide_write(channel, ATA_REG_CONTROL, channels[channel].nIEN = (ide_irq_invoked = 0x0) + 0x02);
 	if (lba >= 0x10000000) {
-		lba_mode = 2;
+		lba_mode  = 2;
 		lba_io[0] = (lba & 0x000000ff) >> 0;
 		lba_io[1] = (lba & 0x0000ff00) >> 8;
 		lba_io[2] = (lba & 0x00ff0000) >> 16;
 		lba_io[3] = (lba & 0xff000000) >> 24;
 		lba_io[4] = 0;
 		lba_io[5] = 0;
-		head = 0;
+		head	  = 0;
 	} else if (ide_devices[drive].capabilities & 0x200) {
-		lba_mode = 1;
+		lba_mode  = 1;
 		lba_io[0] = (lba & 0x00000ff) >> 0;
 		lba_io[1] = (lba & 0x000ff00) >> 8;
 		lba_io[2] = (lba & 0x0ff0000) >> 16;
 		lba_io[3] = 0;
 		lba_io[4] = 0;
 		lba_io[5] = 0;
-		head = (lba & 0xf000000) >> 24;
+		head	  = (lba & 0xf000000) >> 24;
 	} else {
-		lba_mode = 0;
-		sect = (lba % 63) + 1;
-		cyl = (lba + 1 - sect) / (16 * 63);
+		lba_mode  = 0;
+		sect	  = (lba % 63) + 1;
+		cyl		  = (lba + 1 - sect) / (16 * 63);
 		lba_io[0] = sect;
 		lba_io[1] = (cyl >> 0) & 0xff;
 		lba_io[2] = (cyl >> 8) & 0xff;
 		lba_io[3] = 0;
 		lba_io[4] = 0;
 		lba_io[5] = 0;
-		head = (lba + 1 - sect) % (16 * 63) / (63);
+		head	  = (lba + 1 - sect) % (16 * 63) / (63);
 	}
 	dma = 0;
 
@@ -386,26 +388,26 @@ uint8_t ide_ata_access(uint8_t direction, uint8_t drive, uint32_t lba, uint8_t n
 /* Reading data from ATAPI devices */
 uint8_t ide_atapi_read(uint8_t drive, uint32_t lba, uint8_t numsects, uint32_t edi)
 {
-	uint32_t channel = ide_devices[drive].channel;
+	uint32_t channel  = ide_devices[drive].channel;
 	uint32_t slavebit = ide_devices[drive].drive;
-	uint32_t bus = channels[channel].base;
-	uint32_t words = 1024;
-	uint8_t err;
-	int i;
+	uint32_t bus	  = channels[channel].base;
+	uint32_t words	  = 1024;
+	uint8_t	 err;
+	int		 i;
 
 	ide_write(channel, ATA_REG_CONTROL, channels[channel].nIEN = ide_irq_invoked = 0x0);
 
 	/* Setting up SCSI packets */
-	atapi_packet[0] = ATAPI_CMD_READ;
-	atapi_packet[1] = 0x0;
-	atapi_packet[2] = (lba >> 24) & 0xff;
-	atapi_packet[3] = (lba >> 16) & 0xff;
-	atapi_packet[4] = (lba >> 8) & 0xff;
-	atapi_packet[5] = (lba >> 0) & 0xff;
-	atapi_packet[6] = 0x0;
-	atapi_packet[7] = 0x0;
-	atapi_packet[8] = 0x0;
-	atapi_packet[9] = numsects;
+	atapi_packet[0]	 = ATAPI_CMD_READ;
+	atapi_packet[1]	 = 0x0;
+	atapi_packet[2]	 = (lba >> 24) & 0xff;
+	atapi_packet[3]	 = (lba >> 16) & 0xff;
+	atapi_packet[4]	 = (lba >> 8) & 0xff;
+	atapi_packet[5]	 = (lba >> 0) & 0xff;
+	atapi_packet[6]	 = 0x0;
+	atapi_packet[7]	 = 0x0;
+	atapi_packet[8]	 = 0x0;
+	atapi_packet[9]	 = numsects;
 	atapi_packet[10] = 0x0;
 	atapi_packet[11] = 0x0;
 

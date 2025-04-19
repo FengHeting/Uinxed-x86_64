@@ -10,7 +10,7 @@ AllowShortFunctionsOnASingleLine: Empty
 AllowShortLoopsOnASingleLine: true
 AllowShortIfStatementsOnASingleLine: WithoutElse
 AlignConsecutiveMacros: Consecutive
-AlignTrailingComments:
-  Kind: Always
-  OverEmptyLines: 0
+AlignConsecutiveAssignments: true
+AlignConsecutiveDeclarations: true
+AlignTrailingComments: true
 BreakBeforeBraces: Linux

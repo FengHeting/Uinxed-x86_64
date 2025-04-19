@@ -17,12 +17,12 @@
 __attribute__((
 	used,
 	section(".limine_requests"))) static volatile struct limine_memmap_request memmap_request = {
-	.id = LIMINE_MEMMAP_REQUEST,
+	.id		  = LIMINE_MEMMAP_REQUEST,
 	.revision = 0,
 };
 
 FrameAllocator frame_allocator;
-uint64_t memory_size = 0;
+uint64_t	   memory_size = 0;
 
 /* Initialize memory frame */
 void init_frame(void)
@@ -38,7 +38,7 @@ void init_frame(void)
 			break;
 		}
 	}
-	size_t bitmap_size = (memory_size / 4096 + 7) / 8;
+	size_t	 bitmap_size	= (memory_size / 4096 + 7) / 8;
 	uint64_t bitmap_address = 0;
 
 	for (uint64_t i = 0; i < memory_map->entry_count; i++) {
@@ -72,7 +72,7 @@ void init_frame(void)
 	}
 	size_t bitmap_frame_start = bitmap_address / 4096;
 	size_t bitmap_frame_count = (bitmap_size + 4095) / 4096;
-	size_t bitmap_frame_end = bitmap_frame_start + bitmap_frame_count;
+	size_t bitmap_frame_end	  = bitmap_frame_start + bitmap_frame_count;
 	bitmap_set_range(bitmap, bitmap_frame_start, bitmap_frame_end, 0);
 	plogk("Frame: Reserved 0x%04x frames for bitmap at 0x%016x\n", bitmap_frame_count,
 		  bitmap_address);
@@ -87,8 +87,8 @@ void init_frame(void)
 /* Allocate memory frame */
 uint64_t alloc_frames(size_t count)
 {
-	Bitmap *bitmap = &frame_allocator.bitmap;
-	size_t frame_index = bitmap_find_range(bitmap, count, 1);
+	Bitmap *bitmap		= &frame_allocator.bitmap;
+	size_t	frame_index = bitmap_find_range(bitmap, count, 1);
 
 	if (frame_index == (size_t)-1) return 0;
 	bitmap_set_range(bitmap, frame_index, frame_index + count, 0);
@@ -117,10 +117,10 @@ void print_memory_map(void)
 	plogk("Physical RAM map:\n");
 
 	for (uint64_t i = 0; i < memmap_request.response->entry_count; i++) {
-		struct limine_memmap_entry *entry = memmap_request.response->entries[i];
-		uint64_t base = entry->base;
-		uint64_t length = entry->length;
-		uint64_t end = base + length - 1;
+		struct limine_memmap_entry *entry  = memmap_request.response->entries[i];
+		uint64_t					base   = entry->base;
+		uint64_t					length = entry->length;
+		uint64_t					end	   = base + length - 1;
 
 		const char *type_str;
 		switch (entry->type) {

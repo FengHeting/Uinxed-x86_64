@@ -18,23 +18,23 @@
 #include "idt.h"
 #include "printk.h"
 
-page_directory_t kernel_page_dir;
+page_directory_t  kernel_page_dir;
 page_directory_t *current_directory = 0;
 
 /* Page fault handling */
 __attribute__((interrupt)) static void page_fault_handle(interrupt_frame_t *frame,
-														 uint64_t error_code)
+														 uint64_t			error_code)
 {
 	(void)frame;
 	disable_intr();
 	uint64_t faulting_address;
 	__asm__ volatile("mov %%cr2, %0" : "=r"(faulting_address));
 
-	int present = !(error_code & 0x1); // Page does not exist
-	int rw = error_code & 0x2;		   // Read-only page is written
-	int us = error_code & 0x4;		   // User mode writes to kernel page
-	int reserved = error_code & 0x8;   // Write CPU reserved bits
-	int id = error_code & 0x10;		   // Caused by instruction fetch
+	int present	 = !(error_code & 0x1); // Page does not exist
+	int rw		 = error_code & 0x2;	// Read-only page is written
+	int us		 = error_code & 0x4;	// User mode writes to kernel page
+	int reserved = error_code & 0x8;	// Write CPU reserved bits
+	int id		 = error_code & 0x10;	// Caused by instruction fetch
 
 	if (present)
 		panic("PAGE_FAULT-Present-Address: 0x%016x", faulting_address);
@@ -64,8 +64,8 @@ void page_table_clear(page_table_t *table)
 page_table_t *page_table_create(page_table_entry_t *entry)
 {
 	if (entry->value == (uint64_t)0) {
-		uint64_t frame = alloc_frames(1);
-		entry->value = frame | PTE_PRESENT | PTE_WRITEABLE | PTE_USER;
+		uint64_t frame		= alloc_frames(1);
+		entry->value		= frame | PTE_PRESENT | PTE_WRITEABLE | PTE_USER;
 		page_table_t *table = (page_table_t *)phys_to_virt(entry->value & 0xfffffffffffff000);
 		page_table_clear(table);
 		return table;
@@ -112,7 +112,7 @@ void copy_page_table_recursive(page_table_t *source_table, page_table_t *new_tab
 /* Recursively free memory page tables */
 void free_page_table_recursive(page_table_t *table, int level)
 {
-	uint64_t virtual_address = (uint64_t)table;
+	uint64_t virtual_address  = (uint64_t)table;
 	uint64_t physical_address = (uint64_t)virt_to_phys(virtual_address);
 
 	if (level == 0) {
@@ -138,7 +138,7 @@ void free_page_table_recursive(page_table_t *table, int level)
 page_directory_t *clone_directory(page_directory_t *src)
 {
 	page_directory_t *new_directory = malloc(sizeof(page_directory_t));
-	new_directory->table = malloc(sizeof(page_table_t));
+	new_directory->table			= malloc(sizeof(page_table_t));
 	copy_page_table_recursive(src->table, new_directory->table, 3);
 	return new_directory;
 }
@@ -171,7 +171,7 @@ void page_map_to(page_directory_t *directory, uint64_t addr, uint64_t frame, uin
 /* Switch the page directory of the current process */
 void switch_page_directory(page_directory_t *dir)
 {
-	current_directory = dir;
+	current_directory			 = dir;
 	page_table_t *physical_table = virt_to_phys((uint64_t)dir->table);
 	__asm__ volatile("mov %0, %%cr3" ::"r"(physical_table));
 }

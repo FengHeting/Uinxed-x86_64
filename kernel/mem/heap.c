@@ -22,7 +22,7 @@
 void init_heap(void)
 {
 	uint8_t *heap_base = (uint8_t *)(get_physical_memory_offset() + 0x3c0f000);
-	size_t heap_size = 0x800000; // 8MB
+	size_t	 heap_size = 0x800000; // 8MB
 
 	heap_init(heap_base, heap_size);
 }
@@ -30,7 +30,7 @@ void init_heap(void)
 /* Allocate 4k-aligned memory */
 void *alloc_4k_aligned_mem(size_t size)
 {
-	void *p = malloc(size < PAGE_SIZE ? size + PAGE_SIZE : size);
+	void *p			= malloc(size < PAGE_SIZE ? size + PAGE_SIZE : size);
 	void *p_aligned = (void *)(((uint64_t)p + 0xfff) & ~0xfff);
 	return p_aligned;
 }

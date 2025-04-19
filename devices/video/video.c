@@ -15,17 +15,20 @@
 #include "string.h"
 
 __attribute__((used, section(".limine_requests"))) static volatile struct limine_framebuffer_request
-	framebuffer_request = {.id = LIMINE_FRAMEBUFFER_REQUEST, .revision = 0};
+	framebuffer_request = {
+		.id		  = LIMINE_FRAMEBUFFER_REQUEST,
+		.revision = 0,
+};
 
 extern uint8_t ascfont[]; // Fonts
 
-uint64_t width;	  // Screen length
-uint64_t height;  // Screen width
-uint64_t stride;  // Frame buffer line spacing
+uint64_t  width;  // Screen length
+uint64_t  height; // Screen width
+uint64_t  stride; // Frame buffer line spacing
 uint32_t *buffer; // Video Memory
 
-int32_t x, y;				// The current absolute cursor position
-int32_t cx, cy;				// The character position of the current cursor
+int32_t	 x, y;				// The current absolute cursor position
+int32_t	 cx, cy;			// The character position of the current cursor
 uint32_t c_width, c_height; // Screen character width and height
 
 uint32_t fore_color; // Foreground color
@@ -44,15 +47,15 @@ void video_init(void)
 		krn_halt();
 	}
 	struct limine_framebuffer *framebuffer = framebuffer_request.response->framebuffers[0];
-	buffer = framebuffer->address;
-	width = framebuffer->width;
-	height = framebuffer->height;
-	stride = framebuffer->pitch / 4;
+	buffer								   = framebuffer->address;
+	width								   = framebuffer->width;
+	height								   = framebuffer->height;
+	stride								   = framebuffer->pitch / 4;
 
 	x = 2;
 	y = cx = cy = 0;
-	c_width = width / 9;
-	c_height = height / 16;
+	c_width		= width / 9;
+	c_height	= height / 16;
 
 	fore_color = 0xffaaaaaa;
 	back_color = 0xff000000;
@@ -66,8 +69,8 @@ void video_clear(void)
 		buffer[i] = 0xff000000;
 	}
 	back_color = 0xff000000;
-	x = 2;
-	y = 0;
+	x		   = 2;
+	y		   = 0;
 	cx = cy = 0;
 }
 
@@ -78,8 +81,8 @@ void video_clear_color(int color)
 		buffer[i] = color;
 	}
 	back_color = color;
-	x = 2;
-	y = 0;
+	x		   = 2;
+	y		   = 0;
 	cx = cy = 0;
 }
 
@@ -92,9 +95,9 @@ void video_scroll(void)
 	} else
 		cx++;
 	if ((uint32_t)cy >= c_height) {
-		uint8_t *dest = (uint8_t *)buffer;
-		const uint8_t *src = (const uint8_t *)(buffer + stride * 16);
-		size_t count = (width * (height - 16) * sizeof(uint32_t)) / 8;
+		uint8_t		  *dest	 = (uint8_t *)buffer;
+		const uint8_t *src	 = (const uint8_t *)(buffer + stride * 16);
+		size_t		   count = (width * (height - 16) * sizeof(uint32_t)) / 8;
 
 		__asm__ volatile("rep movsq" : "+D"(dest), "+S"(src), "+c"(count)::"memory");
 

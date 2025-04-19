@@ -16,17 +16,17 @@
 #include "string.h"
 #include "timer.h"
 
-uint16_t SLP_TYPa;
-uint16_t SLP_TYPb;
-uint32_t SMI_CMD;
-uint16_t SLP_EN;
-uint16_t SCI_EN;
+uint16_t	 SLP_TYPa;
+uint16_t	 SLP_TYPb;
+uint32_t	 SMI_CMD;
+uint16_t	 SLP_EN;
+uint16_t	 SCI_EN;
 acpi_facp_t *facp;
 
 /* Initialize facp */
 void facp_init(acpi_facp_t *facp0)
 {
-	int i;
+	int		 i;
 	uint8_t *S5Addr;
 	uint32_t dsdtlen;
 	facp = facp0;
@@ -40,7 +40,7 @@ void facp_init(acpi_facp_t *facp0)
 		plogk("ACPI: DSDT 0x%016x\n", dsdtTable);
 	}
 	if (!memcmp(dsdtTable->signature, "DSDT", 4)) {
-		S5Addr = &(dsdtTable->definition_block);
+		S5Addr	= &(dsdtTable->definition_block);
 		dsdtlen = dsdtTable->length - 36;
 		while (dsdtlen--) {
 			if (!memcmp(S5Addr, "_S5_", 4)) {

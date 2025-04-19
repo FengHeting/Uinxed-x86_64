@@ -333,4 +333,5 @@ void (*empty_handle[256])(interrupt_frame_t *frame) = {
 	empty_handler_240, empty_handler_241, empty_handler_242, empty_handler_243, empty_handler_244,
 	empty_handler_245, empty_handler_246, empty_handler_247, empty_handler_248, empty_handler_249,
 	empty_handler_250, empty_handler_251, empty_handler_252, empty_handler_253, empty_handler_254,
-	empty_handler_255};
+	empty_handler_255,
+};

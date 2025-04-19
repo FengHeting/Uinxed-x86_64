@@ -16,16 +16,16 @@
 #include "limine.h"
 #include "printk.h"
 
-int x2apic_mode;
+int		 x2apic_mode;
 uint64_t lapic_address;
 uint64_t ioapic_address;
 
 __attribute__((
 	used, section(".limine_requests"))) static volatile struct limine_smp_request smp_request = {
-	.id = LIMINE_SMP_REQUEST,
+	.id		  = LIMINE_SMP_REQUEST,
 	.revision = 0,
 	.response = 0,
-	.flags = 1,
+	.flags	  = 1,
 };
 
 /* Turn off PIC */
@@ -101,7 +101,7 @@ void local_apic_init(void)
 
 	while (1)
 		if (nano_time() - nano_time() >= 1000000) break;
-	uint64_t lapic_timer = (~(uint32_t)0) - lapic_read(LAPIC_REG_TIMER_CURCNT);
+	uint64_t lapic_timer			  = (~(uint32_t)0) - lapic_read(LAPIC_REG_TIMER_CURCNT);
 	uint64_t calibrated_timer_initial = (uint64_t)((uint64_t)(lapic_timer * 1000) / 250);
 
 	lapic_write(LAPIC_REG_TIMER, lapic_read(LAPIC_REG_TIMER) | 1 << 17);
@@ -156,7 +156,7 @@ void apic_init(MADT *madt)
 		MadtHeader *header = (MadtHeader *)((uint64_t)(&madt->entries) + current);
 		if (header->entry_type == MADT_APIC_IO) {
 			MadtIOApic *ioapic = (MadtIOApic *)((uint64_t)(&madt->entries) + current);
-			ioapic_address = (uint64_t)phys_to_virt(ioapic->address);
+			ioapic_address	   = (uint64_t)phys_to_virt(ioapic->address);
 			plogk("ACPI: IOAPIC Found at address 0x%016x\n", ioapic_address);
 		}
 		current += (uint64_t)header->length;

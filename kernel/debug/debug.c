@@ -34,8 +34,8 @@ void dump_stack(void)
 void panic(const char *format, ...)
 {
 	static char buff[1024];
-	va_list args;
-	int i;
+	va_list		args;
+	int			i;
 
 	va_start(args, format);
 	i = vsprintf(buff, format, args);

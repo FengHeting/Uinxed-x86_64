@@ -27,10 +27,10 @@
 #define input_output 1
 
 typedef struct base_address_register {
-	int prefetchable;
+	int		  prefetchable;
 	uint32_t *address;
-	uint32_t size;
-	int type;
+	uint32_t  size;
+	int		  type;
 } base_address_register;
 
 /* Reading values ​​from PCI device registers */

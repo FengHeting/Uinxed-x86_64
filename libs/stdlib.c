@@ -21,7 +21,7 @@ int is_digit(int c)
 /* Convert a string number to an integer number */
 int atoi(const char *pstr)
 {
-	int ret_integer = 0;
+	int ret_integer	 = 0;
 	int integer_sign = 1;
 
 	if (*pstr == '-') integer_sign = -1;
@@ -48,9 +48,9 @@ int skip_atoi(const char **s)
 /* Formatting an integer as a string */
 char *number(char *str, int64_t num, int base, int size, int precision, int type)
 {
-	char c, sign, tmp[65];
+	char		c, sign, tmp[65];
 	const char *digits = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-	int i;
+	int			i;
 
 	if (type & SMALL) digits = "0123456789abcdefghijklmnopqrstuvwxyz";
 	if (type & LEFT) type &= ~ZEROPAD;
@@ -60,7 +60,7 @@ char *number(char *str, int64_t num, int base, int size, int precision, int type
 
 	if (type & SIGN && num < 0) {
 		sign = '-';
-		num = -num;
+		num	 = -num;
 	} else {
 		sign = (type & PLUS) ? '+' : ((type & SPACE) ? ' ' : 0);
 	}

@@ -14,12 +14,12 @@
 #include "string.h"
 
 /* Global Descriptor Table Definition */
-gdt_entries_t gdt_entries;
+gdt_entries_t		gdt_entries;
 struct gdt_register gdt_pointer;
 
 /* TSS */
 tss_stack_t tss_stack;
-tss_t tss0;
+tss_t		tss0;
 
 /* Initialize the global descriptor table */
 void init_gdt(void)
@@ -51,16 +51,16 @@ void init_gdt(void)
 /* Initialize TSS */
 void tss_init(void)
 {
-	uint64_t address = ((uint64_t)(&tss0));
-	uint64_t low_base = (((address & 0xffffff)) << 16);
-	uint64_t mid_base = (((((address >> 24)) & 0xff)) << 56);
-	uint64_t high_base = (address >> 32);
+	uint64_t address	 = ((uint64_t)(&tss0));
+	uint64_t low_base	 = (((address & 0xffffff)) << 16);
+	uint64_t mid_base	 = (((((address >> 24)) & 0xff)) << 56);
+	uint64_t high_base	 = (address >> 32);
 	uint64_t access_byte = (((uint64_t)(0x89)) << 40);
-	uint64_t limit = (uint64_t)(sizeof(tss_t) - 1);
+	uint64_t limit		 = (uint64_t)(sizeof(tss_t) - 1);
 
 	gdt_entries[5] = (((low_base | mid_base) | limit) | access_byte);
 	gdt_entries[6] = high_base;
-	tss0.ist[0] = ((uint64_t)&tss_stack) + sizeof(tss_stack_t);
+	tss0.ist[0]	   = ((uint64_t)&tss_stack) + sizeof(tss_stack_t);
 
 	plogk("TSS: TSS descriptor configured (addr = 0x%016x, limit = 0x%04x)\n", &tss0,
 		  sizeof(tss_t) - 1);
